@@ -3,16 +3,28 @@ package main
 import (
 	"fmt"
 	"net/http"
+
+	"github.com/gorilla/mux"
+	"github.com/rs/cors"
 )
 
 func main() {
-	http.HandleFunc("/", rootHandler)
-	http.HandleFunc("/home", homeHandler)
+	router := mux.NewRouter()
+	router.HandleFunc("/", rootHandler).Methods("GET")
+	router.HandleFunc("/home", homeHandler).Methods("GET")
 
-	// Starting server on port 8080
+	corsOptions := cors.New(cors.Options{
+		AllowedOrigins: []string{"http://localhost:5173"},
+		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE"},
+		AllowedHeaders: []string{"Content-Type"},
+	})
+
 	port := 8080
 	fmt.Printf("Starting server on port %v\n", port)
-	http.ListenAndServe(fmt.Sprintf(":%v", port), nil)
+
+	handler := corsOptions.Handler(router)
+
+	http.ListenAndServe(fmt.Sprintf(":%v", port), handler)
 }
 
 func rootHandler(w http.ResponseWriter, r *http.Request) {
