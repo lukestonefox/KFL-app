@@ -10,13 +10,14 @@ import (
 
 func main() {
 	router := mux.NewRouter()
-	router.HandleFunc("/", rootHandler).Methods("GET")
 	router.HandleFunc("/home", homeHandler).Methods("GET")
+	router.Handle("/", router)
 
 	corsOptions := cors.New(cors.Options{
-		AllowedOrigins: []string{"http://localhost:5173"},
-		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE"},
-		AllowedHeaders: []string{"Content-Type"},
+		AllowedOrigins:   []string{"http://localhost:5173"},
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE"},
+		AllowedHeaders:   []string{"Content-Type", "Authorization"},
+		AllowCredentials: true,
 	})
 
 	port := 8080
@@ -32,5 +33,6 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func homeHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
 	fmt.Fprintf(w, "Home Handler")
 }
