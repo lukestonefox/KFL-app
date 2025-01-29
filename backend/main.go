@@ -16,8 +16,9 @@ func main() {
 	corsOptions := cors.New(cors.Options{
 		AllowedOrigins:   []string{"http://localhost:5173"},
 		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE"},
-		AllowedHeaders:   []string{"Content-Type", "Authorization"},
+		AllowedHeaders:   []string{"Content-Type", "Authorization", "Origin", "Accept", "X-Requested-With"},
 		AllowCredentials: true,
+		Debug:            true,
 	})
 
 	port := 8080
